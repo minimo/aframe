@@ -366,13 +366,31 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaY;
     var yawObject = this.yawObject;
 
+    // 縦スワイプ対応
+    // modified by fujimoto
+    var pitchObject = this.pitchObject;
+    // modified end
+
     if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
+    // 縦スワイプ対応
+    // modified by fujimoto
+    deltaX = 2 * Math.PI * (evt.touches[0].pageY - this.touchStart.y) / canvas.clientHeight;
+    // modified end
+
     direction = this.data.reverseTouchDrag ? 1 : -1;
     // Limit touch orientaion to to yaw (y axis).
     yawObject.rotation.y -= deltaY * 0.5 * direction;
+
+    // 縦スワイプ対応
+    // modified by fujimoto
+    pitchObject.rotation.x -= deltaX * 0.5 * direction;
+    // Limit touch orientaion to to pitch (x axis).
+    pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
+    // modified end
+
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
