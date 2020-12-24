@@ -251,10 +251,19 @@ module.exports.Component = registerComponent('look-controls', {
       magicWindowAbsoluteEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
       if (!this.previousMagicWindowYaw && magicWindowAbsoluteEuler.y !== 0) {
         this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
+        // modified by fujimoto
+        // 視点リセット時の補正用
+        this.correctionPitch = 0;
+        this.correctionYaw = 0;
+        // modified end
       }
       if (this.previousMagicWindowYaw) {
-        magicWindowDeltaEuler.x = magicWindowAbsoluteEuler.x;
-        magicWindowDeltaEuler.y += magicWindowAbsoluteEuler.y - this.previousMagicWindowYaw;
+        // modified by fujimoto
+        // magicWindowAbsoluteEuler.yをそのまま使用しても問題ない為こっちに修正
+        // 何故Yawを差分で動かしていたのか不明。
+        magicWindowDeltaEuler.x = magicWindowAbsoluteEuler.x - this.correctionPitch;
+        magicWindowDeltaEuler.y = magicWindowAbsoluteEuler.y - this.correctionYaw;
+        // modified end
         magicWindowDeltaEuler.z = magicWindowAbsoluteEuler.z;
         this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
       }
