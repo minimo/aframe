@@ -159,11 +159,17 @@ module.exports.System = registerSystem('material', {
     if (this.sceneEl.isIOS &&
         isHLS(videoEl.src || videoEl.getAttribute('src'),
               videoEl.type || videoEl.getAttribute('type'))) {
+      //================================================================
+      // modified by takada
+      // iOS Safari対応
+      // texture.needsCorrectionBGRA = true; -> false
+      // texture.flipY = false; -> true
+      //================================================================
       // Actually BGRA. Tell shader to correct later.
       texture.format = THREE.RGBAFormat;
-      texture.needsCorrectionBGRA = true;
+      texture.needsCorrectionBGRA = false;
       // Apparently needed for HLS. Tell shader to correct later.
-      texture.flipY = false;
+      texture.flipY = true;
       texture.needsCorrectionFlipY = true;
     }
 
