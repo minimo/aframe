@@ -108,6 +108,17 @@ var isMobile = (function () {
     if (isMobileVR()) {
       _isMobile = false;
     }
+
+    //================================================================
+    // modified by takada
+    // update 2020/02/20
+    // Androidタブレット対応
+    //================================================================
+    var _isTablet = (navigator.userAgent.indexOf('iPad') > -1 || (navigator.userAgent.indexOf('Android') > -1 && navigator.userAgent.indexOf('Mobile') <= 0));
+    if (_isTablet) {
+      _isMobile = true;
+    }
+
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
