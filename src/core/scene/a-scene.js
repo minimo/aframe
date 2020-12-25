@@ -702,6 +702,34 @@ module.exports.AScene = registerElement('a-scene', {
             renderer.setAnimationLoop(this.render);
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
+
+            //================================================================
+            // modified by takada
+            // update 2020/05/12
+            // iOS 13.4 以降の対応
+            //
+            // update 2020/05/20
+            // デスクトップモード調整
+            //
+            // if(!_isTrueIOS) return;
+            // if (majorVersion == 13 && minorVersion >= 4 && ua.indexOf('version/') >= 0){ ... }
+            //================================================================
+            const _isDesktopMode = navigator.userAgent.toLowerCase().indexOf('macintosh') > -1 && 'ontouchend' in document; // デスクトップモード判定
+            if(!_isTrueIOS && !_isDesktopMode) return;
+
+            var ua = navigator.userAgent.toLowerCase();
+            var version = ua.split('os ')[1].split(' ')[0];
+            var majorVersion = version.indexOf('_') >= 0 ? parseInt(version.split('_')[0]) : version;
+            var minorVersion = version.indexOf('_') >= 0 ? parseInt(version.split('_')[1]) : null;
+
+            if (majorVersion == 13 && minorVersion >= 4 && ua.indexOf('version/') >= 0 || _isDesktopMode){
+              var vrDisplay = AFRAME.utils.device.getVRDisplay();
+              if (!vrDisplay || !vrDisplay.poseSensor_ || !vrDisplay.poseSensor_.fusionSensor) return;
+              var fusionSensor = vrDisplay.poseSensor_.fusionSensor;
+              fusionSensor.stop();
+              fusionSensor.isWithoutDeviceMotion = true;
+              fusionSensor.start();
+            }
           }
         });
 

@@ -141,6 +141,14 @@ function isIOS () {
 module.exports.isIOS = isIOS;
 
 function isMobileDeviceRequestingDesktopSite () {
+  //================================================================
+  // modified by takada
+  // update 2020/05/20
+  // デスクトップモード調整
+  //================================================================
+  var _isDesktopMode = navigator.userAgent.toLowerCase().indexOf('macintosh') > -1 && 'ontouchend' in document; // デスクトップモード判定
+  if(_isDesktopMode) return true;
+
   return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
 module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;

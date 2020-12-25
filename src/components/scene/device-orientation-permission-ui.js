@@ -86,11 +86,19 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
 
   showMobileDesktopModeAlert: function () {
     var self = this;
-    var safariIpadAlertEl = createAlertDialog(
-      self.data.cancelButtonText,
-      self.data.mobileDesktopMessage,
-      function () { self.el.removeChild(safariIpadAlertEl); });
-    this.el.appendChild(safariIpadAlertEl);
+    //================================================================
+    // modified by takada
+    // update 2020/05/20
+    // デスクトップモード調整
+    // var safariIpadAlertEl = createAlertDialog(
+    //   self.data.cancelButtonText,
+    //   self.data.mobileDesktopMessage,
+    //   function () { self.el.removeChild(safariIpadAlertEl); });
+    // this.el.appendChild(safariIpadAlertEl);
+    var msg = navigator.language.substr(0, 2) == 'ja' ? 'VRコンテンツを正しく視聴するためにはモバイル用Webサイトを表示してください' : 'Set your browser to Request Mobile Website.';
+    var safariIpadAlertEl = createAlertDialog(msg, null);
+    document.querySelector('body').appendChild(safariIpadAlertEl);
+    safariIpadAlertEl.firstElementChild.style.height = 100 + 'px';
   },
 
   showHTTPAlert: function () {
@@ -171,19 +179,27 @@ function createAlertDialog (closeText, dialogText, onOkClicked) {
   buttonsContainer = document.createElement('div');
   buttonsContainer.classList.add(DIALOG_BUTTONS_CONTAINER_CLASS);
 
-  // Buttons
-  okButton = document.createElement('button');
-  okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
-  okButton.setAttribute(constants.AFRAME_INJECTED, '');
-  okButton.innerHTML = closeText;
-  buttonsContainer.appendChild(okButton);
+  //================================================================
+  // modified by takada
+  // update 2020/05/20
+  // デスクトップモード調整
+  //
+  // add if(onOkClicked != null) {}
+  //================================================================
+  if(onOkClicked != null) {
+    // Buttons
+    okButton = document.createElement('button');
+    okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
+    okButton.setAttribute(constants.AFRAME_INJECTED, '');
+    okButton.innerHTML = closeText;
+    buttonsContainer.appendChild(okButton);
 
-  // Ask for sensor events to be used
-  okButton.addEventListener('click', function (evt) {
-    evt.stopPropagation();
-    onOkClicked();
-  });
-
+    // Ask for sensor events to be used
+    okButton.addEventListener('click', function (evt) {
+      evt.stopPropagation();
+      onOkClicked();
+    });
+  }
   return createDialog(dialogText, buttonsContainer);
 }
 
